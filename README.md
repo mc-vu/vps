@@ -10,14 +10,28 @@ Dieser Leitfaden beschreibt, wie du einen sicheren SSH-Zugang für den Root-User
 ```bash
 ssh-keygen -t ed25519
 ```
+### Root SSH-Pub kopieren
+Vom Mac aus (neues Terminal):
+```bash
+cat ~/root.pub | ssh root@SERVERIP 'cat >> /root/.ssh/authorized_keys'
+```
+Oder per scp:
+```bash
+scp ~/root.pub root@SERVERIP:/root/.ssh/authorized_keys
+```
 
 ### SSH nur Key-Login (sshd_config)
+sshd öffnen und bearbeiten
 ```bash
 sudo nano /etc/ssh/sshd_config
-# Dann hinzufügen:
-# PasswordAuthentication no
-# PubkeyAuthentication yes  
-# PermitRootLogin no
+# Suche und setze:
+PermitRootLogin yes
+PubkeyAuthentication yes
+PasswordAuthentication yes  # Optional: später auf "no" für Sicherheit
+```
+
+Nun systemctl neustarten
+```bash
 sudo systemctl restart ssh
 ```
 
